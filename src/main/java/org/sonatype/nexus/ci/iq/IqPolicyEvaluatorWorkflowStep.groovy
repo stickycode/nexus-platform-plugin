@@ -72,7 +72,7 @@ class IqPolicyEvaluatorWorkflowStep
   }
 
   @Override
-  String getApplicationId(){
+  String getApplicationId() {
     if (applicationSelectTypePost == IqPolicyEvaluator.SELECT_APPLICATION_SELECT_TYPE) {
       return listAppId
     }
@@ -140,8 +140,7 @@ class IqPolicyEvaluatorWorkflowStep
     {
       FormValidation val = FormValidation.validateRequired(value)
       if (FormValidation.ok() == val) {
-        if (!IqUtil.
-            verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(), jobCredentialsId, job, value)) {
+        if (!IqUtil.verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(), jobCredentialsId, job, value)) {
           FormValidation.error(Messages._IqPolicyEvaluation_ManualApplicationVerificationFailed())
         }
       }
