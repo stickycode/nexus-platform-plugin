@@ -43,8 +43,10 @@ class IqUtil
   }
 
   static boolean verifyOrCreateApplication(final String serverUrl,
-                                                            final String credentialsId,
-                                                            final ModelObject context, String applicationPublicId) {
+                                           final String credentialsId,
+                                           final ModelObject context,
+                                           final String applicationPublicId)
+  {
     def client = IqClientFactory.getIqClient(
         new IqClientFactoryConfiguration(credentialsId: credentialsId, context: context,
             serverUrl: URI.create(serverUrl)))
