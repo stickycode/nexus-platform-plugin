@@ -50,7 +50,7 @@ f.section(title: descriptor.displayName) {
   }
 
   f.entry(title: 'Application') {
-    f.hetero_radio(field: 'application', descriptors: Jenkins.instance.getDescriptorList(IqApplication.class))
+    f.hetero_radio(field: 'iqApplication', descriptors: Jenkins.instance.getDescriptorList(IqApplication.class))
   }
 
   f.advanced() {

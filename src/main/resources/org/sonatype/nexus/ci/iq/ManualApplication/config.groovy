@@ -12,11 +12,9 @@
  */
 package org.sonatype.nexus.ci.iq.ManualApplication
 
-import org.sonatype.nexus.ci.iq.ManualApplication
 import org.sonatype.nexus.ci.iq.Messages
 
 def f = namespace(lib.FormTagLib)
-def manualApplication = (ManualApplication) instance
 
 f.entry(title: _(Messages.IqPolicyEvaluation_Application())) {
   f.textbox(field: 'applicationId')
