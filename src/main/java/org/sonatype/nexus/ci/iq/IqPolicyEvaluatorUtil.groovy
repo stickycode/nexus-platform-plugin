@@ -56,7 +56,8 @@ class IqPolicyEvaluatorUtil
               expandedModuleExcludes, workspace, proprietaryConfig, loggerBridge, GlobalNexusConfiguration.instanceId)
       def scanResult = launcher.getChannel().call(remoteScanner).copyToLocalScanResult()
 
-      def evaluationResult = iqClient.evaluateApplication(iqPolicyEvaluator.iqApplication, iqPolicyEvaluator.iqStage, scanResult)
+      def evaluationResult = iqClient.
+          evaluateApplication(iqPolicyEvaluator.iqApplication, iqPolicyEvaluator.iqStage, scanResult)
 
       def healthAction = new PolicyEvaluationHealthAction(run, evaluationResult)
       run.addAction(healthAction)
