@@ -73,7 +73,7 @@ class IqPolicyEvaluatorWorkflowStep
   }
 
   @DataBoundSetter
-  public void setApplication(final String iqApplication) {
+  public void setIqApplication(final String iqApplication) {
     this.iqApplication = new SelectedApplication(iqApplication)
   }
 
