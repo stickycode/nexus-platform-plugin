@@ -12,6 +12,8 @@
  */
 package org.sonatype.nexus.ci.iq
 
+import java.lang.reflect.UndeclaredThrowableException
+
 import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
@@ -79,11 +81,11 @@ class IqPolicyEvaluatorUtil
     }
   }
 
-  private static handleNetworkException(final boolean failBuildOnNetworkError, final IqNetworkException e,
+  private static handleNetworkException(final Boolean failBuildOnNetworkError, final IqNetworkException e,
                                     final TaskListener listener, final Run run)
   {
     if (failBuildOnNetworkError) {
-      throw e.cause
+      throw e
     }
     else {
       listener.logger.println Messages.IqPolicyEvaluation_UnableToCommunicate(e.message)
@@ -99,11 +101,13 @@ class IqPolicyEvaluatorUtil
       closure()
     }
     catch (Exception e) {
-      if (isNetworkError(e)) {
-        throw new IqNetworkException(e.getMessage(), e)
+      // Groovy closure wraps exception in UndeclaredThrowableException, unwrap here
+      Throwable throwable = e instanceof UndeclaredThrowableException ? e.getUndeclaredThrowable() : e
+      if (isNetworkError(throwable)) {
+        throw new IqNetworkException(throwable.getMessage(), throwable)
       }
       else {
-        throw e
+        throw throwable
       }
     }
   }
