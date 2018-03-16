@@ -12,14 +12,47 @@
  */
 package org.sonatype.nexus.ci.nxrm
 
+import hudson.FilePath
 import hudson.model.Run
 import hudson.model.TaskListener
 
+import static hudson.model.Result.FAILURE
+import static org.sonatype.nexus.ci.config.NxrmVersion.NEXUS_2
+import static org.sonatype.nexus.ci.config.NxrmVersion.NEXUS_3
+import static org.sonatype.nexus.ci.util.NxrmUtil.getNexusConfiguration
+
 class ComponentUploaderFactory
 {
-  static ComponentUploader getComponentUploader(final Run run,
+  static ComponentUploader getComponentUploader(final String nexusInstanceId,
+                                                final Run run,
+                                                final FilePath baseDir,
                                                 final TaskListener taskListener)
   {
-    return new ComponentUploader(run, taskListener)
+    def logger = taskListener.getLogger()
+    def environment = run.getEnvironment(taskListener)
+    def nexusConfiguration = getNexusConfiguration(nexusInstanceId)
+
+    if (!nexusConfiguration) {
+      illegalArg(run, logger, "Nexus Configuration ${nexusInstanceId} not found.",
+          'Failing build due to missing Nexus Configuration')
+    }
+
+    switch (nexusConfiguration.version) {
+      case NEXUS_2:
+        return new org.sonatype.nexus.ci.nxrm.v2.ComponentUploaderImpl(nexusConfiguration, baseDir, environment, logger)
+      case NEXUS_3:
+        return new org.sonatype.nexus.ci.nxrm.v3.ComponentUploaderImpl(nexusConfiguration, baseDir, environment, logger)
+      default:
+        illegalArg(run, logger, "Nexus Configuration ${nexusInstanceId} has an unknown repository version.",
+            'Failing build due to unknown Nexus Repository Manager version')
+        break
+    }
+  }
+
+  private static void illegalArg(run, logger, logMessage, failMessage) {
+    logger.println(logMessage)
+    logger.println(failMessage)
+    run.setResult(FAILURE)
+    throw new IllegalArgumentException(logMessage)
   }
 }
