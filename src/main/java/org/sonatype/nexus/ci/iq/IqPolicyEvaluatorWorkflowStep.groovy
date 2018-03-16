@@ -37,11 +37,7 @@ class IqPolicyEvaluatorWorkflowStep
 {
   String iqStage
 
-  String applicationSelectTypePost
-
-  String listAppId
-
-  String manualAppId
+  IqApplication iqApplication
 
   List<ScanPattern> iqScanPatterns
 
@@ -71,33 +67,20 @@ class IqPolicyEvaluatorWorkflowStep
     this.jobCredentialsId = jobCredentialsId
   }
 
-  @Override
-  String getApplicationId(){
-    if (applicationSelectTypePost == IqPolicyEvaluator.SELECT_APPLICATION_SELECT_TYPE) {
-      return listAppId
-    }
-    else {
-      return manualAppId
-    }
+  @DataBoundSetter
+  public void setIqApplication(final IqApplication iqApplication) {
+    this.iqApplication = iqApplication
+  }
+
+  @DataBoundSetter
+  public void setApplication(final String iqApplication) {
+    this.iqApplication = new SelectedApplication(iqApplication)
   }
 
   @DataBoundConstructor
-  IqPolicyEvaluatorWorkflowStep(final String iqStage,
-                                final String applicationSelectTypePost,
-                                final String listAppId,
-                                final String manualAppId
-  )
+  IqPolicyEvaluatorWorkflowStep(final String iqStage)
   {
     this.iqStage = iqStage
-    this.applicationSelectTypePost = applicationSelectTypePost
-    if (applicationSelectTypePost == IqPolicyEvaluator.SELECT_APPLICATION_SELECT_TYPE) {
-      this.listAppId = listAppId
-      this.manualAppId = ''
-    }
-    else {
-      this.listAppId = ''
-      this.manualAppId = manualAppId
-    }
   }
 
   @Extension
@@ -127,30 +110,6 @@ class IqPolicyEvaluatorWorkflowStep
     @Override
     ListBoxModel doFillIqStageItems(@QueryParameter @Nullable String jobCredentialsId, @AncestorInPath Job job) {
       IqUtil.doFillIqStageItems(jobCredentialsId, job)
-    }
-
-    @Override
-    FormValidation doCheckListAppId(@QueryParameter String value) {
-      FormValidation.validateRequired(value)
-    }
-
-    @Override
-    FormValidation doCheckManualAppId(@QueryParameter String value, @QueryParameter String jobCredentialsId,
-                                      @AncestorInPath Job job)
-    {
-      FormValidation val = FormValidation.validateRequired(value)
-      if (FormValidation.ok() == val) {
-        if (!IqUtil.
-            verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(), jobCredentialsId, job, value)) {
-          FormValidation.error(Messages._IqPolicyEvaluation_ManualApplicationVerificationFailed())
-        }
-      }
-      return val
-    }
-
-    @Override
-    ListBoxModel doFillListAppIdItems(@QueryParameter @Nullable String jobCredentialsId, @AncestorInPath Job job) {
-      IqUtil.doFillIqApplicationItems(jobCredentialsId, job)
     }
 
     @Override

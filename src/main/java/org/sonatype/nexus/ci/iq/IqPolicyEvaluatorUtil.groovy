@@ -15,7 +15,6 @@ package org.sonatype.nexus.ci.iq
 import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
-import org.sonatype.nexus.ci.util.IqUtil
 import org.sonatype.nexus.ci.util.LoggerBridge
 
 import hudson.EnvVars
@@ -38,7 +37,7 @@ class IqPolicyEvaluatorUtil
                                                     final TaskListener listener)
   {
     try {
-      String applicationId = iqPolicyEvaluator.getApplicationId()
+      String applicationId = iqPolicyEvaluator.iqApplication.applicationId
 
       checkArgument(iqPolicyEvaluator.iqStage && applicationId,
           'Arguments iqApplication and iqStage are mandatory')
