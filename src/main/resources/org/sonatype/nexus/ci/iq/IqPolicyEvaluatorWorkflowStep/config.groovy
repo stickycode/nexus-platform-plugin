@@ -13,8 +13,11 @@
 package org.sonatype.nexus.ci.iq.IqPolicyEvaluatorWorkflowStep
 
 import org.sonatype.nexus.ci.config.NxiqConfiguration
+import org.sonatype.nexus.ci.iq.IqApplication
 import org.sonatype.nexus.ci.iq.IqPolicyEvaluator
 import org.sonatype.nexus.ci.iq.Messages
+
+import jenkins.model.Jenkins
 
 def f = namespace(lib.FormTagLib)
 def c = namespace(lib.CredentialsTagLib)
@@ -46,23 +49,9 @@ f.section(title: descriptor.displayName) {
   f.entry(title: _(Messages.IqPolicyEvaluation_Stage()), field: 'iqStage') {
     f.select()
   }
-  f.radioBlock(name: 'applicationSelectTypePost', value: IqPolicyEvaluator.SELECT_APPLICATION_SELECT_TYPE, checked: instance == null || instance.manualAppId == '',
-      title: _(Messages.IqPolicyEvaluation_SelectApplication()),
-      inline: 'true') {
-    f.nested {
-      f.entry(title: _(Messages.IqPolicyEvaluation_Application()), field: 'listAppId') {
-        f.select()
-      }
-    }
-  }
-  f.radioBlock(name: 'applicationSelectTypePost', value: IqPolicyEvaluator.MANUAL_APPLICATION_SELECT_TYPE, checked: instance != null && instance.manualAppId != '',
-      title: _(Messages.IqPolicyEvaluation_ManualApplication()),
-      inline: 'true') {
-    f.nested {
-      f.entry(title: _(Messages.IqPolicyEvaluation_Application()), field: 'manualAppId') {
-        f.textbox()
-      }
-    }
+
+  f.entry(title: 'Application') {
+    f.hetero_radio(field: 'iqApplication', descriptors: Jenkins.instance.getDescriptorList(IqApplication.class))
   }
 
   f.advanced() {

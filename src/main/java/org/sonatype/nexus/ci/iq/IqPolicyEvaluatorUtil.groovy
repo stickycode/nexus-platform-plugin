@@ -37,7 +37,12 @@ class IqPolicyEvaluatorUtil
                                                     final TaskListener listener)
   {
     try {
-      String applicationId = iqPolicyEvaluator.getApplicationId()
+      String applicationId = iqPolicyEvaluator.getIqApplication() != null ? iqPolicyEvaluator.
+          getIqApplication().applicationId : null
+      //if (!IqUtil.verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(), redentialsId: iqPolicyEvaluator
+      // .jobCredentialsId, context: run.parent, applicationId)) {
+      //  throw new IllegalArgumentException(String.valueOf('JIMBO'))
+      //}
 
       checkArgument(iqPolicyEvaluator.iqStage && applicationId, 'Arguments iqApplication and iqStage are mandatory')
       LoggerBridge loggerBridge = new LoggerBridge(listener)
