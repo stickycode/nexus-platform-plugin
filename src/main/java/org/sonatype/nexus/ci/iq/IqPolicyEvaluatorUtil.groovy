@@ -15,6 +15,8 @@ package org.sonatype.nexus.ci.iq
 import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
+import org.sonatype.nexus.ci.config.NxiqConfiguration
+import org.sonatype.nexus.ci.util.IqUtil
 import org.sonatype.nexus.ci.util.LoggerBridge
 
 import hudson.EnvVars
@@ -39,12 +41,13 @@ class IqPolicyEvaluatorUtil
     try {
       String applicationId = iqPolicyEvaluator.getIqApplication() != null ? iqPolicyEvaluator.
           getIqApplication().applicationId : null
-      //if (!IqUtil.verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(), redentialsId: iqPolicyEvaluator
-      // .jobCredentialsId, context: run.parent, applicationId)) {
-      //  throw new IllegalArgumentException(String.valueOf('JIMBO'))
-      //}
 
       checkArgument(iqPolicyEvaluator.iqStage && applicationId, 'Arguments iqApplication and iqStage are mandatory')
+      checkArgument(IqUtil.verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(),
+          redentialsId: iqPolicyEvaluator.jobCredentialsId, context: run.parent, applicationId),
+          'Argument iqApplication failed verify or create. To Fix, Either the ' + applicationId +
+              'app exists and correct or Auto Application Creation is configured.')
+
       LoggerBridge loggerBridge = new LoggerBridge(listener)
       loggerBridge.debug(Messages.IqPolicyEvaluation_Evaluating())
 
