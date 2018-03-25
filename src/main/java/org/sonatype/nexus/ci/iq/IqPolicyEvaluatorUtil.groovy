@@ -15,13 +15,13 @@ package org.sonatype.nexus.ci.iq
 import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
-import org.sonatype.nexus.ci.config.NxiqConfiguration
 import org.sonatype.nexus.ci.util.IqUtil
 import org.sonatype.nexus.ci.util.LoggerBridge
 
 import hudson.EnvVars
 import hudson.FilePath
 import hudson.Launcher
+import hudson.model.ModelObject
 import hudson.model.Result
 import hudson.model.Run
 import hudson.model.TaskListener
@@ -43,16 +43,19 @@ class IqPolicyEvaluatorUtil
           getIqApplication().applicationId : null
 
       checkArgument(iqPolicyEvaluator.iqStage && applicationId, 'Arguments iqApplication and iqStage are mandatory')
-      checkArgument(IqUtil.verifyOrCreateApplication(NxiqConfiguration.serverUrl.toString(),
-          redentialsId: iqPolicyEvaluator.jobCredentialsId, context: run.parent, applicationId),
-          'Argument iqApplication failed verify or create. To Fix, Either the ' + applicationId +
-              'app exists and correct or Auto Application Creation is configured.')
+      final String credentialsId = iqPolicyEvaluator.jobCredentialsId
+      final ModelObject context = run.parent
 
       LoggerBridge loggerBridge = new LoggerBridge(listener)
       loggerBridge.debug(Messages.IqPolicyEvaluation_Evaluating())
 
-      def iqClient = IqClientFactory.getIqClient(new IqClientFactoryConfiguration(
-          credentialsId: iqPolicyEvaluator.jobCredentialsId, context: run.parent, log: loggerBridge))
+      def iqClient = IqClientFactory.getIqClient(
+          new IqClientFactoryConfiguration(credentialsId: credentialsId, context: context, log: loggerBridge))
+
+      def verified = IqUtil.verifyOrCreateApplication(iqClient, applicationId)
+      checkArgument(verified,
+          'Argument iqApplication failed verify or create. To Fix, Either the ' + applicationId +
+              'app exists and correct or Auto Application Creation is configured.')
 
       def envVars = run.getEnvironment(listener)
       def expandedScanPatterns = getScanPatterns(iqPolicyEvaluator.iqScanPatterns, envVars)

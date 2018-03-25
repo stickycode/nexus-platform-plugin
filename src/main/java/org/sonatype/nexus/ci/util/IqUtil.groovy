@@ -17,6 +17,8 @@ import javax.annotation.Nullable
 import com.sonatype.nexus.api.exception.IqClientException
 import com.sonatype.nexus.api.iq.ApplicationSummary
 import com.sonatype.nexus.api.iq.Context
+import com.sonatype.nexus.api.iq.IqClient
+import com.sonatype.nexus.api.iq.internal.InternalIqClient
 
 import org.sonatype.nexus.ci.config.Messages
 import org.sonatype.nexus.ci.config.NxiqConfiguration
@@ -42,15 +44,10 @@ class IqUtil
     return client.getApplicationsForApplicationEvaluation()
   }
 
-  static boolean verifyOrCreateApplication(final String serverUrl,
-                                           final String credentialsId,
-                                           final ModelObject context,
+  static boolean verifyOrCreateApplication(IqClient iqClient,
                                            final String applicationPublicId)
   {
-    def client = IqClientFactory.getIqClient(
-        new IqClientFactoryConfiguration(credentialsId: credentialsId, context: context,
-            serverUrl: URI.create(serverUrl)))
-    return client.verifyOrCreateApplication(applicationPublicId)
+    return iqClient.verifyOrCreateApplication(applicationPublicId)
   }
 
   static ListBoxModel doFillIqStageItems(@Nullable final String credentialsId, final Job job) {

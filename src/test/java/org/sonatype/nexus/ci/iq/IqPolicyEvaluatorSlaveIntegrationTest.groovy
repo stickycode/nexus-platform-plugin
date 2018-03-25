@@ -14,6 +14,7 @@ package org.sonatype.nexus.ci.iq
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
 import org.sonatype.nexus.ci.config.NxiqConfiguration
+import org.sonatype.nexus.ci.util.IqUtil
 
 import com.cloudbees.plugins.credentials.CredentialsProvider
 import com.cloudbees.plugins.credentials.CredentialsScope
@@ -75,6 +76,7 @@ class IqPolicyEvaluatorSlaveIntegrationTest
 
   def 'Should perform a freestyle build on slave'() {
     given: 'a jenkins project'
+      GroovyMock(IqUtil, global: true)
       FreeStyleProject project = jenkins.createFreeStyleProject()
       project.assignedNode = jenkins.createSlave()
       project.buildersList.add(new IqPolicyEvaluatorBuildStep('stage', new SelectedApplication('app'), [], [], false, 'cred-id'))
@@ -87,11 +89,13 @@ class IqPolicyEvaluatorSlaveIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the return code is successful'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       jenkins.assertBuildStatusSuccess(build)
   }
 
   def 'Should perform a pipeline build on slave'() {
     given: 'a jenkins project'
+      GroovyMock(IqUtil, global: true)
       WorkflowJob project = jenkins.createProject(WorkflowJob)
       Slave slave = jenkins.createSlave()
       configureJenkins()
@@ -108,6 +112,7 @@ class IqPolicyEvaluatorSlaveIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the return code is successful'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       jenkins.assertBuildStatusSuccess(build)
   }
 }

@@ -22,6 +22,7 @@ import com.sonatype.nexus.api.iq.scan.ScanResult
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
 import org.sonatype.nexus.ci.config.NxiqConfiguration
 import org.sonatype.nexus.ci.config.NxrmConfiguration
+import org.sonatype.nexus.ci.util.IqUtil
 
 import com.cloudbees.plugins.credentials.CredentialsProvider
 import com.cloudbees.plugins.credentials.CredentialsScope
@@ -64,6 +65,7 @@ class IqPolicyEvaluatorIntegrationTest
     iqClientBuilder.withInstanceId(_) >> iqClientBuilder
     iqClient = Mock()
     iqClientBuilder.build() >> iqClient
+    GroovyMock(IqUtil, global: true)
   }
 
   def 'Declarative pipeline build successful with mandatory parameters'() {
@@ -79,7 +81,7 @@ class IqPolicyEvaluatorIntegrationTest
                 'stage("Example") { \n' +
                 'steps { \n' +
                   'writeFile file: \'dummy.txt\', text: \'dummy\'\n' +
-                  'nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'select\', ' +
+                  'nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'app\', ' +
                   'iqStage: \'stage\'\n'+
                 '} \n' +
               '} \n' +
@@ -88,6 +90,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >>
           new ApplicationPolicyEvaluation(0, 1, 2, 3, [], 'http://server/link/to/report')
@@ -117,6 +120,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')
@@ -143,6 +147,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')
@@ -166,6 +171,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new IOException("BANG!") }
 
     then: 'the build status is unstable and the result is null'
@@ -184,6 +190,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new IOException("BANG!") }
 
     then: 'the return code is successful'
@@ -204,6 +211,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new NullPointerException("CRASH!") }
 
     then: 'the build fails'
@@ -221,6 +229,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new NullPointerException("BANG!") }
 
     then: 'the return code is successful'
@@ -242,6 +251,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
@@ -279,6 +289,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
@@ -306,6 +317,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
+      1 * IqUtil.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
