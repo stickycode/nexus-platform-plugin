@@ -39,18 +39,16 @@ class IqPolicyEvaluatorUtil
                                                     final TaskListener listener)
   {
     try {
-      String applicationId = iqPolicyEvaluator.getIqApplication() != null ? iqPolicyEvaluator.
-          getIqApplication().applicationId : null
+      String applicationId = iqPolicyEvaluator.getIqApplication()?.applicationId
 
       checkArgument(iqPolicyEvaluator.iqStage && applicationId, 'Arguments iqApplication and iqStage are mandatory')
-      final String credentialsId = iqPolicyEvaluator.jobCredentialsId
-      final ModelObject context = run.parent
 
       LoggerBridge loggerBridge = new LoggerBridge(listener)
       loggerBridge.debug(Messages.IqPolicyEvaluation_Evaluating())
 
       def iqClient = IqClientFactory.getIqClient(
-          new IqClientFactoryConfiguration(credentialsId: credentialsId, context: context, log: loggerBridge))
+          new IqClientFactoryConfiguration(credentialsId: iqPolicyEvaluator.jobCredentialsId, context: run.parent,
+              log: loggerBridge))
 
       def verified = IqUtil.verifyOrCreateApplication(iqClient, applicationId)
       checkArgument(verified,

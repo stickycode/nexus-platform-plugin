@@ -67,16 +67,15 @@ class IqPolicyEvaluatorWorkflowStep
     this.jobCredentialsId = jobCredentialsId
   }
 
-
   @DataBoundSetter
-  public void setIqApplication(final String iqApplication) {
-    this.iqApplication = new SelectedApplication(iqApplication)
+  public void setIqApplication(final Object iqApplication) {
+    if (iqApplication.getClass() == String.class) {
+      this.iqApplication = new SelectedApplication(iqApplication)
+    }
+    else {
+      this.iqApplication = iqApplication
+    }
   }
-
-  /*@DataBoundSetter
-  public void setIqApplication(final ManualApplication iqApplication) {
-    this.iqApplication = iqApplication
-  }*/
 
   @DataBoundConstructor
   IqPolicyEvaluatorWorkflowStep(final String iqStage)

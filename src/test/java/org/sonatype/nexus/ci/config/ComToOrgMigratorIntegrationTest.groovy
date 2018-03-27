@@ -39,14 +39,13 @@ class ComToOrgMigratorIntegrationTest
   public JenkinsRule jenkins
 
   private InternalIqClient iqClient
+
   private ComponentUploader componentUploader
 
   def setup() {
     def classLoader = getClass().getClassLoader();
     def file = new File(classLoader.getResource('org/sonatype/nexus/ci/config/ComToOrgMigratorIntegrationTest').getFile());
     jenkins = new JenkinsRule().withExistingHome(file)
-
-    //GroovyMock(IqUtil, global: true)
 
     GroovyMock(InternalIqClientBuilder, global: true)
     def iqClientBuilder = Mock(InternalIqClientBuilder)
@@ -94,19 +93,8 @@ class ComToOrgMigratorIntegrationTest
 
   def 'it migrates a Freestyle IQ job'() {
     when:
-      def project = (FreeStyleProject)jenkins.jenkins.getItem('Freestyle-IQ')
-      def buildStep = (IqPolicyEvaluatorBuildStep)project.builders[0]
       GroovyMock(IqUtil, global: true)
-
-    then: 'the fields are properly migrated'
-      buildStep.iqStage == 'build'
-      //buildStep.iqApplication.applicationId == 'sample-app'
-      buildStep.failBuildOnNetworkError
-      buildStep.jobCredentialsId == 'user2'
-      buildStep.iqScanPatterns.size() == 1
-      buildStep.iqScanPatterns[0].scanPattern == 'target/*.jar'
-
-    and: 'a build is run'
+      def project = (FreeStyleProject)jenkins.jenkins.getItem('Freestyle-IQ')
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
