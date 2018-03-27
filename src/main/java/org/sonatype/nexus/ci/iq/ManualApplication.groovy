@@ -23,11 +23,6 @@ class ManualApplication
     super(applicationId)
   }
 
-  String getName()
-  {
-    'manual'
-  }
-
   @Extension
   static class DescriptorImpl
       extends IqApplication.IqApplicationDescriptor

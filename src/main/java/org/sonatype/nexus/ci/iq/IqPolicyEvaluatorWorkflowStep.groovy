@@ -67,15 +67,20 @@ class IqPolicyEvaluatorWorkflowStep
     this.jobCredentialsId = jobCredentialsId
   }
 
+  @SuppressWarnings('Instanceof')
   @DataBoundSetter
   public void setIqApplication(final Object iqApplication) {
-    if (iqApplication.getClass() == String.class) {
+    if (iqApplication instanceof IqApplication) {
+      this.iqApplication = iqApplication
+    }
+    else if (iqApplication instanceof String) {
       this.iqApplication = new SelectedApplication(iqApplication)
     }
     else {
-      this.iqApplication = iqApplication
+      throw new IllegalArgumentException("iqApplication is not a valid format")
     }
   }
+
   @DataBoundConstructor
   IqPolicyEvaluatorWorkflowStep(final String iqStage)
   {

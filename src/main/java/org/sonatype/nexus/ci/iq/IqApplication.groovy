@@ -18,16 +18,16 @@ import hudson.util.FormValidation
 import jenkins.model.Jenkins
 import org.kohsuke.stapler.QueryParameter
 
+@SuppressWarnings('AbstractClassWithoutAbstractMethod')
 abstract class IqApplication
     implements Describable<IqApplication>
 {
   String applicationId
-  
-  protected IqApplication(final String applicationId) {
+
+  @SuppressWarnings('AbstractClassWithPublicConstructor')
+  IqApplication(final String applicationId) {
     this.applicationId = applicationId
   }
-
-  abstract String getName()
 
   @Override
   Descriptor<IqApplication> getDescriptor() {

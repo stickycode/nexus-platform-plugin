@@ -29,11 +29,6 @@ class SelectedApplication
     super(applicationId)
   }
 
-  String getName()
-  {
-    'select'
-  }
-
   @Extension
   static class DescriptorImpl
       extends IqApplication.IqApplicationDescriptor
