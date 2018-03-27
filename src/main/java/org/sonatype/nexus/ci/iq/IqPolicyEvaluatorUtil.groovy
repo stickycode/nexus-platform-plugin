@@ -15,13 +15,11 @@ package org.sonatype.nexus.ci.iq
 import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
-import org.sonatype.nexus.ci.util.IqUtil
 import org.sonatype.nexus.ci.util.LoggerBridge
 
 import hudson.EnvVars
 import hudson.FilePath
 import hudson.Launcher
-import hudson.model.ModelObject
 import hudson.model.Result
 import hudson.model.Run
 import hudson.model.TaskListener

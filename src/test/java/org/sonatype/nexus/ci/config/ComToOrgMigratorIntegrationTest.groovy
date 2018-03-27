@@ -18,13 +18,11 @@ import com.sonatype.nexus.api.iq.internal.InternalIqClient
 import com.sonatype.nexus.api.iq.internal.InternalIqClientBuilder
 import com.sonatype.nexus.api.iq.scan.ScanResult
 
-import org.sonatype.nexus.ci.iq.IqPolicyEvaluatorBuildStep
 import org.sonatype.nexus.ci.nxrm.ComponentUploader
 import org.sonatype.nexus.ci.nxrm.ComponentUploaderFactory
 import org.sonatype.nexus.ci.nxrm.MavenPackage
 import org.sonatype.nexus.ci.nxrm.NexusPublisher
 import org.sonatype.nexus.ci.nxrm.NexusPublisherBuildStep
-import org.sonatype.nexus.ci.util.IqUtil
 
 import hudson.model.FreeStyleProject
 import org.jenkinsci.plugins.workflow.job.WorkflowJob

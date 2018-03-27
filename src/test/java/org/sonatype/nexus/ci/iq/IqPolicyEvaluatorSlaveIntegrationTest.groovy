@@ -16,7 +16,6 @@ import com.sonatype.nexus.api.iq.internal.InternalIqClient
 
 import org.sonatype.nexus.ci.config.GlobalNexusConfiguration
 import org.sonatype.nexus.ci.config.NxiqConfiguration
-import org.sonatype.nexus.ci.util.IqUtil
 
 import com.cloudbees.plugins.credentials.CredentialsProvider
 import com.cloudbees.plugins.credentials.CredentialsScope
