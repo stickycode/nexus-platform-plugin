@@ -18,7 +18,6 @@ import com.sonatype.nexus.api.exception.IqClientException
 import com.sonatype.nexus.api.iq.ApplicationSummary
 import com.sonatype.nexus.api.iq.Context
 import com.sonatype.nexus.api.iq.IqClient
-import com.sonatype.nexus.api.iq.internal.InternalIqClient
 
 import org.sonatype.nexus.ci.config.Messages
 import org.sonatype.nexus.ci.config.NxiqConfiguration
@@ -44,7 +43,7 @@ class IqUtil
     return client.getApplicationsForApplicationEvaluation()
   }
 
-  static boolean verifyOrCreateApplication(IqClient iqClient,
+  static boolean verifyOrCreateApplication(final IqClient iqClient,
                                            final String applicationPublicId)
   {
     return iqClient.verifyOrCreateApplication(applicationPublicId)

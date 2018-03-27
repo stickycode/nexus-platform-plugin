@@ -13,7 +13,6 @@
 package org.sonatype.nexus.ci.iq
 
 import hudson.Extension
-import org.jenkinsci.Symbol
 import org.kohsuke.stapler.DataBoundConstructor
 
 class ManualApplication
@@ -28,7 +27,7 @@ class ManualApplication
   {
     'manual'
   }
-  @Symbol('manualApplication')
+
   @Extension
   static class DescriptorImpl
       extends IqApplication.IqApplicationDescriptor
