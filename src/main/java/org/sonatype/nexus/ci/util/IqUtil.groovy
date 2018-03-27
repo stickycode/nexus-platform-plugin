@@ -43,12 +43,6 @@ class IqUtil
     return client.getApplicationsForApplicationEvaluation()
   }
 
-  static boolean verifyOrCreateApplication(final IqClient iqClient,
-                                           final String applicationPublicId)
-  {
-    return iqClient.verifyOrCreateApplication(applicationPublicId)
-  }
-
   static ListBoxModel doFillIqStageItems(@Nullable final String credentialsId, final Job job) {
     if (NxiqConfiguration.iqConfig) {
       def client = IqClientFactory.

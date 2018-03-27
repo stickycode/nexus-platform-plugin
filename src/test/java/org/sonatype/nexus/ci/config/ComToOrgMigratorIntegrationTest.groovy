@@ -93,12 +93,11 @@ class ComToOrgMigratorIntegrationTest
 
   def 'it migrates a Freestyle IQ job'() {
     when:
-      GroovyMock(IqUtil, global: true)
       def project = (FreeStyleProject)jenkins.jenkins.getItem('Freestyle-IQ')
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication('sample-app', 'build', _) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')
@@ -109,12 +108,11 @@ class ComToOrgMigratorIntegrationTest
 
   def 'it migrates a Pipeline IQ job'() {
     when: 'a build is run'
-      GroovyMock(IqUtil, global: true)
       def project = (WorkflowJob)jenkins.jenkins.getItem('Pipeline-IQ')
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication('sample-app', 'build', _) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')

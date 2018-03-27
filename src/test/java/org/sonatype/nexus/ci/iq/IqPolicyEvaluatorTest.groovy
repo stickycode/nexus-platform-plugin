@@ -83,12 +83,10 @@ class IqPolicyEvaluatorTest
     remoteScanResult.copyToLocalScanResult() >> scanResult
     run.getEnvironment(_) >> envVars
     run.parent >> job
-    GroovyMock(IqUtil, global: true)
   }
 
   def 'it retrieves proprietary config followed by remote scan followed by evaluation in correct order (happy path)'() {
     setup:
-      GroovyMock(IqUtil, global: true)
       def buildStep = new IqPolicyEvaluatorBuildStep("stage", new SelectedApplication('appId'), [new ScanPattern("*.jar")], [],
           false, null)
       def evaluationResult = new ApplicationPolicyEvaluation(0, 0, 0, 0, emptyList(), reportUrl)
@@ -98,7 +96,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then: 'retrieves proprietary config'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('appId') >> proprietaryConfig
 
     then: 'performs a remote scan'
@@ -121,7 +119,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * RemoteScannerFactory.
           getRemoteScanner("appId", "stage", ['/path1/some-scan-pattern/path2/'], _, workspace, _, _ as Logger,
               'instance-id') >> remoteScanner
@@ -137,7 +135,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * RemoteScannerFactory.
           getRemoteScanner("appId", "stage", ['/path1/$NONEXISTENT_SCAN_PATTERN/path2/'], _, workspace, _, _ as Logger,
               'instance-id') >> remoteScanner
@@ -153,7 +151,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * RemoteScannerFactory.getRemoteScanner(*_) >> { arguments ->
         assert arguments[3] == ['/path1/$NONEXISTENT_MODULE_EXCLUDE/path2/']
         remoteScanner
@@ -170,7 +168,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * RemoteScannerFactory.getRemoteScanner(*_) >> { arguments ->
         assert arguments[3] == ['/path1/some-module-exclude/path2/']
         remoteScanner
@@ -187,7 +185,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       Exception e = thrown()
       e.class == expectedException
       e.message == expectedMessage
@@ -214,7 +212,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, listener)
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       noExceptionThrown()
       1 * run.setResult(Result.UNSTABLE)
       1 * logger.println('Unable to communicate with IQ Server: BOOM!!')
@@ -238,7 +236,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * channel.call(remoteScanner) >> { throw new IOException('CRASH') }
       IOException e = thrown()
       e.message == 'CRASH'
@@ -254,7 +252,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >>
           { throw new IqClientException('SNAP', new IOException('CRASH')) }
       noExceptionThrown()
@@ -270,7 +268,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * IqClientFactory.getIqClient { it.credentialsId == jobCredentials } >> iqClient
 
     where:
@@ -287,7 +285,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >>
           new ApplicationPolicyEvaluation(0, 0, 0, 0, alerts, reportUrl)
       1 * run.setResult(buildResult)
@@ -311,7 +309,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, Mock(TaskListener))
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >> policyEvaluation
       1 * run.setResult(Result.FAILURE)
 
@@ -335,7 +333,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, listener)
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >>
           new ApplicationPolicyEvaluation(0, 1, 2, 3, [new PolicyAlert(trigger, [new Action(Action.ID_FAIL)])],
               reportUrl)
@@ -363,7 +361,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, listener)
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >>
           new ApplicationPolicyEvaluation(0, 1, 2, 3, [new PolicyAlert(trigger, [new Action(Action.ID_WARN)])],
               reportUrl)
@@ -387,7 +385,7 @@ class IqPolicyEvaluatorTest
       buildStep.perform(run, workspace, launcher, listener)
 
     then:
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.evaluateApplication('appId', 'stage', scanResult) >>
           new ApplicationPolicyEvaluation(0, 0, 0, 0, [],
               reportUrl)

@@ -50,7 +50,7 @@ class IqPolicyEvaluatorUtil
           new IqClientFactoryConfiguration(credentialsId: iqPolicyEvaluator.jobCredentialsId, context: run.parent,
               log: loggerBridge))
 
-      def verified = IqUtil.verifyOrCreateApplication(iqClient, applicationId)
+      def verified = iqClient.verifyOrCreateApplication(applicationId)
       checkArgument(verified,
           'Argument iqApplication failed verify or create. To Fix, Either the ' + applicationId +
               'app exists and correct or Auto Application Creation is configured.')

@@ -65,7 +65,6 @@ class IqPolicyEvaluatorIntegrationTest
     iqClientBuilder.withInstanceId(_) >> iqClientBuilder
     iqClient = Mock()
     iqClientBuilder.build() >> iqClient
-    GroovyMock(IqUtil, global: true)
   }
 
   def 'Declarative pipeline build successful with mandatory parameters'() {
@@ -90,7 +89,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >>
           new ApplicationPolicyEvaluation(0, 1, 2, 3, [], 'http://server/link/to/report')
@@ -120,7 +119,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')
@@ -147,7 +146,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3, [],
           'http://server/link/to/report')
@@ -171,7 +170,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new IOException("BANG!") }
 
     then: 'the build status is unstable and the result is null'
@@ -190,7 +189,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new IOException("BANG!") }
 
     then: 'the return code is successful'
@@ -211,7 +210,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new NullPointerException("CRASH!") }
 
     then: 'the build fails'
@@ -229,7 +228,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'an exception is thrown when getting proprietary config from IQ server'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.getProprietaryConfigForApplicationEvaluation('app') >> { throw new NullPointerException("BANG!") }
 
     then: 'the return code is successful'
@@ -251,7 +250,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
@@ -289,7 +288,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
@@ -317,7 +316,7 @@ class IqPolicyEvaluatorIntegrationTest
       def build = project.scheduleBuild2(0).get()
 
     then: 'the application is scanned and evaluated'
-      1 * IqUtil.verifyOrCreateApplication(*_) >> true
+      1 * iqClient.verifyOrCreateApplication(*_) >> true
       1 * iqClient.scan(*_) >> new ScanResult(new Scan(), File.createTempFile('dummy-scan', '.xml.gz'))
       1 * iqClient.evaluateApplication(*_) >> new ApplicationPolicyEvaluation(0, 1, 2, 3,
           [createAlert(Action.ID_FAIL)], 'http://server/link/to/report')
