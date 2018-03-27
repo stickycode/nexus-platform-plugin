@@ -16,6 +16,6 @@ import org.sonatype.nexus.ci.iq.Messages
 
 def f = namespace(lib.FormTagLib)
 
-f.entry(title: _(Messages.IqPolicyEvaluation_Application())) {
+f.entry(title: _(Messages.IqPolicyEvaluation_Application()),field: 'applicationIdEntry') {
   f.textbox(field: 'applicationId')
 }
