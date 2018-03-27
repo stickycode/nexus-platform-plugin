@@ -79,7 +79,7 @@ class IqPolicyEvaluatorIntegrationTest
                 'stage("Example") { \n' +
                 'steps { \n' +
                   'writeFile file: \'dummy.txt\', text: \'dummy\'\n' +
-                  'nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'app\', ' +
+                  'nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: \'app\', ' +
                   'iqStage: \'stage\'\n'+
                 '} \n' +
               '} \n' +
@@ -105,7 +105,7 @@ class IqPolicyEvaluatorIntegrationTest
     when: 'the nexus policy evaluator is executed'
       project.definition = new CpsFlowDefinition('node {\n' +
           'writeFile file: \'dummy.txt\', text: \'dummy\'\n' +
-          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'select\', ' +
+          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: \'select\', ' +
           'iqStage: \'stage\'\n' +
           'echo "url:" + result.applicationCompositionReportUrl\n' +
           'echo "affected:" + result.affectedComponentCount\n' +
@@ -242,7 +242,7 @@ class IqPolicyEvaluatorIntegrationTest
     when: 'the nexus policy evaluator is executed'
       project.definition = new CpsFlowDefinition('node {\n' +
           'writeFile file: \'dummy.txt\', text: \'dummy\'\n' +
-          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'app\', ' +
+          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: \'app\', ' +
           'iqStage: \'stage\'\n' +
           'echo "next" \n' +
           '}\n')
