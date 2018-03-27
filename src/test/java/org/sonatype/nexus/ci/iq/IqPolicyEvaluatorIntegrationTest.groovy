@@ -334,7 +334,7 @@ class IqPolicyEvaluatorIntegrationTest
     when: 'the nexus policy evaluator is executed without stage'
       project.definition = new CpsFlowDefinition('node {\n' +
           'writeFile file: \'dummy.txt\', text: \'dummy\'\n' +
-          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false,  iqApplication: \'app\'\n' +
+          'def result = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: \'app\'\n' +
           'echo \'result-after-failure:\' + result' +
           '}\n')
       def build = project.scheduleBuild2(0).get()
